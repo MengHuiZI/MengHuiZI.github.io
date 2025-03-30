@@ -42,11 +42,11 @@ export const navBarConfig: NavBarConfig = {
     LinkPreset.Home,
     LinkPreset.Archive,
     LinkPreset.About,
-    {
+    /*{
       name: 'GitHub',
       url: 'https://github.com/MengHuiZI',     // Internal links should not include the base path, as it is automatically added
       external: true,                               // Show an external link icon and will open in a new tab
-    },
+    },*/
   ],
 }
 
@@ -66,12 +66,12 @@ export const profileConfig: ProfileConfig = {
       name: 'Steam',
       icon: 'fa6-brands:steam',
       url: 'https://store.steampowered.com',
-    },*/
+    },
     {
       name: 'GitHub',
       icon: 'fa6-brands:github',
       url: 'https://github.com/MengHuiZI',
-    },
+    },*/
   ],
 }
 
