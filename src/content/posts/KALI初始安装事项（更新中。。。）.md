@@ -64,3 +64,16 @@ setopt INC_APPEND_HISTORY  # 立即写入历史文件
     - ![image-20250618120341732](./assets/image-20250618120341732.png)
     - ![image-20250618120429680](./assets/image-20250618120429680.png)
 
+# 可能存在的问题
+
+## PIP安装提示”外部管理环境“
+
+运行命令
+
+```bash
+mv /usr/lib/python3.13/EXTERNALLY-MANAGED /usr/lib/python3.13/EXTERNALLY-MANAGED.bak
+```
+
+原因
+
+Manjaro、Ubuntu、Fedora 以及其他的最新发行版中，正在使用 Python 包来实现此增强功能。这个更新是为了避免「操作系统包管理器 (如pacman、yum、apt) 和 pip 等特定于 Python 的包管理工具之间的冲突」。这些冲突包括 Python 级 API 不兼容和文件所有权冲突。
