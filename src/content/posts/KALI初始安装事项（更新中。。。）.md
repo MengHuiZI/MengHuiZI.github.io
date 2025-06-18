@@ -61,6 +61,6 @@ setopt INC_APPEND_HISTORY  # 立即写入历史文件
     - `update-alternatives --config java`
     - `update-alternatives --config javac`
 + 验证
-    - ![JDK8](https://cdn.nlark.com/yuque/0/2025/png/44191974/1750150454303-523875fb-f891-47ce-a68a-a0b4d7119235.png)
-    - ![JDK21](https://cdn.nlark.com/yuque/0/2025/png/44191974/1750150522490-6dc399c6-32e8-4f02-9152-46455890c8cd.png)
+    - ![image-20250618120341732](./assets/image-20250618120341732.png)
+    - ![image-20250618120429680](./assets/image-20250618120429680.png)
 
