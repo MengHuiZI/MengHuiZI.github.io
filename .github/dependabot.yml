@@ -3,7 +3,8 @@ updates:
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
-      interval: "monthly"
+      interval: "never"     #配置检查频率为从不
+    open-pull-requests-limit: 0  # 禁止创建任何PR
     groups:
       patch-updates:
         patterns:
