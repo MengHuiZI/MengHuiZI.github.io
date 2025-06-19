@@ -3,7 +3,7 @@ updates:
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
-      interval: "never"     #配置检查频率为从不
+      interval: "daily" #可选：daily, weekly, monthly, quarterly, semiannually, yearly, cron
     open-pull-requests-limit: 0  # 禁止创建任何PR
     groups:
       patch-updates:
