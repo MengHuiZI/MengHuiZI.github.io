@@ -77,3 +77,61 @@ mv /usr/lib/python3.13/EXTERNALLY-MANAGED /usr/lib/python3.13/EXTERNALLY-MANAGED
 原因
 
 Manjaro、Ubuntu、Fedora 以及其他的最新发行版中，正在使用 Python 包来实现此增强功能。这个更新是为了避免「操作系统包管理器 (如pacman、yum、apt) 和 pip 等特定于 Python 的包管理工具之间的冲突」。这些冲突包括 Python 级 API 不兼容和文件所有权冲突。
+
+#  配置SSH
+
+在`~/.ssh/`创建config文件，添加以下内容以支持旧的ssh算法
+
+```bash
+# 可选：全局旧算法支持（适用于所有服务器）
+Host *
+    HostKeyAlgorithms +ssh-rsa
+    PubkeyAcceptedAlgorithms +ssh-rsa
+```
+
+
+
+#  安装Impacket包
+
+## 压缩包安装
+
+下载压缩包并解压然后进入压缩包目录下的`examples`目录，使用python3运行对应的py文件即可
+
+```bash
+python3 wmiexec.py domain/user:password@ip
+python3 psexec.py domain/user@ip -hashs :NTLM
+```
+
+##  PIP安装
+
+```bash
+python3 -m pipx install impacket
+```
+
+安装完成后家目录下的`.local/bin/`中会有对应的impacket中py文件的软链接
+
+![image-20250711082526525](./assets/image-20250711082526525.png)
+
+可选：
+
+将该目录临时加入环境变量，这样就可以使用快捷命令
+
+```bash
+export PATH="$PATH:/root/.local/bin"
+```
+
+持久化加入环境变量，注销后重新登录就会自动执行脚本加入环境变量，也可以运行`source /etc/profile`命令为当前登录用户运行脚本（推荐）。要卸载的话毫无疑问删除脚本即可
+
+```bash
+#在/etc/profile.d/目录下创建一个脚本，脚本内容为以下内容即可
+#!/bin/sh
+export PATH="$PATH:/root/.local/bin"
+```
+
+![image-20250711082644346](./assets/image-20250711082644346.png)
+
+示例
+
+![image-20250711082653216](./assets/image-20250711082653216.png)
+
+使用见impacket使用笔记
